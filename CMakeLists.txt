@@ -10,9 +10,7 @@ project(boost.beast.coro VERSION 0.1.0)
 
 find_package(OpenSSL 1.0.1 REQUIRED)
 
-FIND_PACKAGE(Boost 1.78.0 REQUIRED COMPONENTS thread)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+find_package(Boost 1.78.0 REQUIRED COMPONENTS thread)
 
 FetchContent_Declare(
   jwt-cpp
@@ -27,8 +25,8 @@ add_subdirectory("${jwt-cpp_SOURCE_DIR}" "${jwt-cpp_BINARY_DIR}")
 
 add_executable(boost.beast.coro main.cpp)
 
-SET(USED_LIBS ${Boost_THREAD_LIBRARY} OpenSSL::SSL OpenSSL::Crypto)
-TARGET_LINK_LIBRARIES(boost.beast.coro ${USED_LIBS})
+set(USED_LIBS ${Boost_THREAD_LIBRARY} OpenSSL::SSL OpenSSL::Crypto jwt-cpp)
+target_link_libraries(boost.beast.coro ${USED_LIBS})
 
-INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
-target_link_libraries(boost.beast.coro jwt-cpp)
+set(INCLUDE_DIRS ${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+target_include_directories(boost.beast.coro PRIVATE ${INCLUDE_DIRS})
