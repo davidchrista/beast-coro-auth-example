@@ -288,13 +288,15 @@ awaitable<void> session(beast::tcp_stream stream, const std::string &doc_root)
   {
     for (;;)
     {
-      stream.expires_after(std::chrono::seconds(30));
+      stream.expires_after(std::chrono::seconds(10));
 
       http::request<http::string_body> req;
 
       boost::system::error_code ec;
       co_await http::async_read(stream, buffer, req,
                                 boost::asio::redirect_error(use_awaitable, ec));
+      if (ec != boost::system::error_code())
+        std::printf("ERROR: %s\n", ec.what().c_str());
       if (ec == http::error::end_of_stream)
         break;
 
